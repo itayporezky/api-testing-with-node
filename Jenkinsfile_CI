@@ -1,0 +1,32 @@
+pipeline {
+    agent any
+
+    // tools {
+    //     // Install the Maven version configured as "M3" and add it to the path.
+    //     maven "M3"
+    // }
+
+    stages {
+        stage('Build') {
+            steps {
+                // Get some code from a GitHub repository
+                git 'https://github.com/itayporezky/api-testing-with-node'
+                sh 'npm install' 
+            }
+        }
+        stage('Start & Test') {
+            steps {
+                parallel(
+                  start: {
+                        sh "timeout 8 npm start || exit 0"
+                  },
+                  test: {
+                        sh 'sleep 5'
+                        sh "npm test"
+                  }
+                )
+            }
+        }
+    }
+}
+
