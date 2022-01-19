@@ -25,6 +25,11 @@ pipeline {
                         sh "npm test"
                   }
                 )
+		post {
+                    sucess {
+                        sh 'echo here'
+                    }
+               }
             }
         }
     }
