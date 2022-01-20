@@ -1,17 +1,12 @@
 pipeline {
     agent any
 
-    // tools {
-    //     // Install the Maven version configured as "M3" and add it to the path.
-    //     maven "M3"
-    // }
-
     stages {
         stage('Build') {
             steps {
                 // Get some code from a GitHub repository
                 git 'https://github.com/itayporezky/api-testing-with-node'
-                sh 'npm install' 
+                sh 'npm install'
             }
         }
         stage('Start & Test') {
@@ -25,13 +20,13 @@ pipeline {
                         sh "npm test"
                   }
                 )
-	    }
-	    post {
-                sucess {
-                        sh 'echo here'
-                       }
-                 }
+            }
+            post {
+                success {
+                    sh 'docker build . -t itayporezky/itay_api_test:${BUILD_NUMBER}'
+                    sh 'docker push itayporezky/itay_api_test:${BUILD_NUMBER}'
+                }
+            }
         }
     }
 }
-
